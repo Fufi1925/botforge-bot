@@ -1,8 +1,13 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Collection } from 'discord.js';
 import { DisTube } from 'distube';
-import { config } from 'dotenv';
+import { YouTubePlugin } from '@distube/youtube';
+import { SoundCloudPlugin } from '@distube/soundcloud';
+import { SpotifyPlugin } from '@distube/spotify';
+import * as dotenv from 'dotenv';
+import { Logger } from './lib/logger';
+import { EmbedBuilder } from './lib/embed';
 
-config();
+dotenv.config();
 
 const client = new Client({
   intents: [
@@ -14,19 +19,27 @@ const client = new Client({
   ],
 });
 
-// Musik-Teil ganz einfach ohne Plugins für den ersten Start
+// Musik-Player Initialisierung (KORRIGIERT)
 const distube = new DisTube(client, {
+  plugins: [
+    new YouTubePlugin(),
+    new SoundCloudPlugin(),
+    new SpotifyPlugin(),
+  ],
   emitNewSongOnly: true,
-  leaveOnEmpty: true,
+  emitAddSongWhenCreatingQueue: false,
 });
 
 client.once('ready', () => {
-  console.log(`✅ BotForge ist online als ${client.user?.tag}`);
+  Logger.info(`Eingeloggt als ${client.user?.tag}`);
 });
 
-// Fehler abfangen, damit der Bot nicht abstürzt
-process.on('unhandledRejection', error => {
-  console.error('Ein Fehler ist aufgetreten:', error);
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isCommand()) return;
+  // Befehls-Logik hier...
+  Logger.info(`Befehl ausgeführt: ${interaction.commandName}`);
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_BOT_TOKEN);
+
+export { client, distube };
