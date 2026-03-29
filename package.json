@@ -17,6 +17,7 @@
     "@distube/soundcloud": "^2.0.4",
     "@distube/spotify": "^2.0.2",
     "libsodium-wrappers": "^0.7.13",
+    "node-cron": "^3.0.3",
     "prisma": "^5.11.0",
     "@prisma/client": "^5.11.0",
     "winston": "^3.12.0",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "@types/node-cron": "^3.0.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
