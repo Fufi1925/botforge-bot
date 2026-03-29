@@ -1,11 +1,6 @@
-import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { DisTube } from 'distube';
-import { SpotifyPlugin } from '@distube/spotify';
-import { SoundCloudPlugin } from '@distube/soundcloud';
-import { YtDlpPlugin } from '@distube/yt-dlp';
 import { config } from 'dotenv';
-import { PrismaClient } from '@prisma/client';
-import { createLogger, format, transports } from 'winston';
 
 config();
 
@@ -19,17 +14,19 @@ const client = new Client({
   ],
 });
 
+// Musik-Teil ganz einfach ohne Plugins für den ersten Start
 const distube = new DisTube(client, {
-  plugins: [
-    new SpotifyPlugin(),
-    new SoundCloudPlugin(),
-    new YtDlpPlugin(),
-  ],
+  emitNewSongOnly: true,
+  leaveOnEmpty: true,
 });
 
-// Bot-Start
 client.once('ready', () => {
-  console.log(`BotForge ist online als ${client.user?.tag}`);
+  console.log(`✅ BotForge ist online als ${client.user?.tag}`);
+});
+
+// Fehler abfangen, damit der Bot nicht abstürzt
+process.on('unhandledRejection', error => {
+  console.error('Ein Fehler ist aufgetreten:', error);
 });
 
 client.login(process.env.DISCORD_TOKEN);
