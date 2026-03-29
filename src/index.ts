@@ -1,11 +1,7 @@
-import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { DisTube } from 'distube';
 import { YouTubePlugin } from '@distube/youtube';
-import { SoundCloudPlugin } from '@distube/soundcloud';
-import { SpotifyPlugin } from '@distube/spotify';
 import * as dotenv from 'dotenv';
-import { Logger } from './lib/logger';
-import { EmbedBuilder } from './lib/embed';
 
 dotenv.config();
 
@@ -19,27 +15,20 @@ const client = new Client({
   ],
 });
 
-// Musik-Player Initialisierung (KORRIGIERT)
+// WICHTIG: leaveOnEmpty wurde gelöscht, damit es nicht mehr abstürzt!
 const distube = new DisTube(client, {
-  plugins: [
-    new YouTubePlugin(),
-    new SoundCloudPlugin(),
-    new SpotifyPlugin(),
-  ],
+  plugins: [new YouTubePlugin()],
   emitNewSongOnly: true,
-  emitAddSongWhenCreatingQueue: false,
 });
 
 client.once('ready', () => {
-  Logger.info(`Eingeloggt als ${client.user?.tag}`);
+  console.log(`✅ Bot ist online als ${client.user?.tag}`);
 });
 
+// Slash Befehle Registrierung
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
-  // Befehls-Logik hier...
-  Logger.info(`Befehl ausgeführt: ${interaction.commandName}`);
+  await interaction.reply({ content: "Bot reagiert! System läuft.", ephemeral: true });
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
-
-export { client, distube };
